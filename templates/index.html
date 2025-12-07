@@ -1,0 +1,361 @@
+<!DOCTYPE html>
+<html lang="fr">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>AgriPredict - Prédiction du Rendement Agricole</title>
+    <link rel="stylesheet" href="../static/css/style.css" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700&family=Playfair+Display:wght@600;700&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
+    <script src="https://unpkg.com/feather-icons"></script>
+  </head>
+  <body class="bg-background text-foreground font-sans antialiased">
+    <div id="root" class="min-h-screen">
+      <section
+        class="relative min-h-[30vh] flex items-center justify-center overflow-hidden"
+      >
+        <div class="absolute inset-0">
+          <img
+            src="../static/images/téléchargement.JPG"
+            alt="Champs agricoles dorés au coucher du soleil"
+            class="w-full object-cover"
+          />
+
+          <div class="absolute inset-0 bg-gradient-overlay"></div>
+        </div>
+
+        <div class="relative z-10 container mx-auto px-4 py-16 text-center">
+          <div class="animate-slide-up">
+            <div class="hero-badge">
+              <i class="fas fa-leaf"></i>
+              <span>Intelligence Agricole</span>
+            </div>
+
+            <h1
+              style="margin-bottom: -11px; margin-top: -3px"
+              class="font-display text-4xl md-text-3xl lg-text-3xl font-bold text-primary-foreground mb-1 leading-tight"
+            >
+              Prédiction du<br />
+              <span class="text-sun-color">Rendement Agricole</span>
+            </h1>
+
+            <p
+              class="text-lg md-text-xl text-primary-foreground-90 max-w-2xl mx-auto leading-relaxed"
+            >
+              Optimisez vos récoltes grâce à notre outil de prédiction
+              intelligent. Entrez vos paramètres agricoles et obtenez une
+              estimation précise de votre rendement.
+            </p>
+          </div>
+        </div>
+      </section>
+
+      <section class="py-10 px-4">
+        <div class="container mx-auto max-w-4xl">
+          <div class="text-center mb-12 animate-fade-in">
+            <h2
+              class="font-display text-3xl md-text-4xl font-bold text-foreground mb-4"
+            >
+              Calculez votre rendement
+            </h2>
+            <p class="text-muted-foreground text-lg max-w-2xl mx-auto">
+              Renseignez les paramètres de votre exploitation pour obtenir une
+              estimation précise de votre production.
+            </p>
+          </div>
+
+          <div
+            class="card shadow-elevated border-0 bg-card-80 backdrop-blur-sm"
+          >
+            <header class="border-b border-border-50 p-6 md-p-8">
+              <h3
+                class="flex items-center gap-3 text-xl font-display font-bold text-card-foreground"
+              >
+                <div class="p-2 rounded-lg bg-primary-10">
+                  <i
+                    data-feather="bar-chart-2"
+                    class="w-5 h-5 text-primary-color"
+                  ></i>
+                </div>
+                Paramètres de culture
+              </h3>
+            </header>
+
+            <div class="card-body">
+              <form id="prediction-form">
+                <div class="form-grid">
+                  <!-- Région -->
+                  <div class="form-group">
+                    <label for="region">
+                      <i
+                        class="fas fa-map-marker-alt"
+                        style="color: var(--primary)"
+                      ></i>
+                      Région
+                    </label>
+                    <select id="region" class="form-control" required>
+                      <option value="" disabled selected>
+                        Sélectionnez une région
+                      </option>
+                      <option value="north">Nord</option>
+                      <option value="south">Sud</option>
+                      <option value="east">Est</option>
+                      <option value="west">Ouest</option>
+                    </select>
+                  </div>
+
+                  <!-- Type de sol -->
+                  <div class="form-group">
+                    <label for="soilType">
+                      <i
+                        class="fas fa-mountain"
+                        style="color: var(--earth)"
+                      ></i>
+                      Type de sol
+                    </label>
+                    <select id="soilType" class="form-control" required>
+                      <option value="" disabled selected>
+                        Sélectionnez le type de sol
+                      </option>
+                      <option value="clay">Argileux (Clay)</option>
+                      <option value="sandy">Sablonneux (Sandy)</option>
+                      <option value="loamy">Limoneux (Loamy)</option>
+                      <option value="peaty">Tourbeux (Peaty)</option>
+                      <option value="chalky">Calcaire (Chalky)</option>
+                    </select>
+                  </div>
+
+                  <!-- Type de culture -->
+                  <div class="form-group">
+                    <label for="cropType">
+                      <i class="fas fa-seedling" style="color: var(--sun)"></i>
+                      Type de culture
+                    </label>
+                    <select id="cropType" class="form-control" required>
+                      <option value="" disabled selected>
+                        Sélectionnez la culture
+                      </option>
+                      <option value="wheat">Blé (Wheat)</option>
+                      <option value="rice">Riz (Rice)</option>
+                      <option value="corn">Maïs (Corn)</option>
+                      <option value="soybean">Soja (Soybean)</option>
+                      <option value="barley">Orge (Barley)</option>
+                      <option value="cotton">Cotton (Cotton)</option>
+                    </select>
+                  </div>
+
+                  <!-- Conditions météo -->
+                  <div class="form-group">
+                    <label for="weatherCondition">
+                      <i class="fas fa-sun" style="color: var(--sun)"></i>
+                      Conditions météo dominantes
+                    </label>
+                    <select id="weatherCondition" class="form-control" required>
+                      <option value="" disabled selected>
+                        Sélectionnez la météo
+                      </option>
+                      <option value="sunny">Ensoleillé (Sunny)</option>
+                      <option value="cloudy">Nuageux (Cloudy)</option>
+                      <option value="rainy">Pluvieux (Rainy)</option>
+                    </select>
+                  </div>
+
+                  <!-- Précipitations -->
+                  <div class="form-group">
+                    <label for="rainfall">
+                      <i
+                        class="fas fa-cloud-rain"
+                        style="color: var(--sky)"
+                      ></i>
+                      Précipitations totales (mm)
+                    </label>
+                    <input
+                      type="number"
+                      id="rainfall"
+                      class="form-control"
+                      placeholder="Ex: 750"
+                      min="0"
+                      required
+                    />
+                  </div>
+
+                  <!-- Température -->
+                  <div class="form-group">
+                    <label for="temperature">
+                      <i
+                        class="fas fa-thermometer-half"
+                        style="color: var(--destructive)"
+                      ></i>
+                      Température moyenne (°C)
+                    </label>
+                    <input
+                      type="number"
+                      id="temperature"
+                      class="form-control"
+                      placeholder="Ex: 25"
+                      min="-10"
+                      max="50"
+                      required
+                    />
+                  </div>
+
+                  <!-- Durée de croissance -->
+                  <div class="form-group full-width">
+                    <label for="growingDays">
+                      <i
+                        class="fas fa-calendar-alt"
+                        style="color: var(--primary)"
+                      ></i>
+                      Durée de croissance (jours)
+                    </label>
+                    <input
+                      type="number"
+                      id="growingDays"
+                      class="form-control"
+                      placeholder="Nombre de jours entre le semis et la récolte"
+                      min="1"
+                      required
+                    />
+                  </div>
+                </div>
+
+                <!-- Toggles -->
+                <div class="toggles-row">
+                  <div class="toggle-group">
+                    <div class="toggle-label">
+                      <div
+                        class="toggle-icon"
+                        style="background: rgba(142, 50%, 45%, 0.1)"
+                      >
+                        <i class="fas fa-flask" style="color: var(--leaf)"></i>
+                      </div>
+                      <div class="toggle-content">
+                        <label
+                          for="fertilizerUsed"
+                          style="cursor: pointer; margin: 0"
+                          >Engrais utilisé</label
+                        >
+                        <p>Fertilisant appliqué sur les cultures</p>
+                      </div>
+                    </div>
+                    <label class="switch">
+                      <input type="checkbox" id="fertilizerUsed" />
+                      <span class="slider"></span>
+                    </label>
+                  </div>
+
+                  <div class="toggle-group">
+                    <div class="toggle-label">
+                      <div
+                        class="toggle-icon"
+                        style="background: rgba(200, 60%, 50%, 0.1)"
+                      >
+                        <i class="fas fa-tint" style="color: var(--sky)"></i>
+                      </div>
+                      <div class="toggle-content">
+                        <label
+                          for="irrigationUsed"
+                          style="cursor: pointer; margin: 0"
+                          >Irrigation utilisée</label
+                        >
+                        <p>Système d'irrigation en place</p>
+                      </div>
+                    </div>
+                    <label class="switch">
+                      <input type="checkbox" id="irrigationUsed" />
+                      <span class="slider"></span>
+                    </label>
+                  </div>
+                </div>
+
+                <!-- Boutons -->
+                <div class="button-group">
+                  <button
+                    type="submit"
+                    id="submit-button"
+                    class="btn btn-primary"
+                  >
+                    <i class="fas fa-chart-line"></i>
+                    <span id="submit-text">Prédire le rendement</span>
+                    <span id="loading-text" class="hidden">
+                      <i class="fas fa-spinner fa-spin"></i>
+                      Calcul en cours...
+                    </span>
+                  </button>
+                  <button
+                    type="button"
+                    id="reset-button"
+                    class="btn btn-outline"
+                  >
+                    Réinitialiser
+                  </button>
+                </div>
+              </form>
+
+              <!-- Résultat -->
+              <div id="prediction-result" class="result-card hidden">
+                <div class="result-content">
+                  <div>
+                    <p
+                      style="
+                        opacity: 0.8;
+                        font-size: 0.875rem;
+                        text-transform: uppercase;
+                        letter-spacing: 0.05em;
+                        margin-bottom: 0.5rem;
+                      "
+                    >
+                      Rendement estimé
+                    </p>
+                    <p class="result-value">
+                      <span id="final-prediction">5,37</span>
+                      <span class="result-unit">t/ha</span>
+                    </p>
+                  </div>
+                  <div style="text-align: center">
+                    <div class="result-badge">
+                      <i class="fas fa-chart-line"></i>
+                      <span>Prédiction réussie</span>
+                    </div>
+                    <p class="result-note">Basé sur les paramètres fournis</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+      <!-- 
+      <footer class="py-10 px-4 border-t border-border-50 bg-card-50">
+        <div class="container mx-auto max-w-4xl">
+          <div
+            class="flex flex-col md-flex-row items-center justify-between gap-4"
+          >
+            <div class="flex items-center gap-2">
+              <div class="p-2 rounded-lg bg-primary-10">
+                <i data-feather="leaf" class="w-5 h-5 text-primary-color"></i>
+              </div>
+              <span class="font-display font-semibold text-foreground">
+                AgriPredict
+              </span>
+            </div>
+            <p class="text-sm text-muted-foreground text-center">
+              © 2024 AgriPredict. Outil de prédiction agricole intelligent.
+            </p>
+          </div>
+        </div>
+      </footer> -->
+    </div>
+
+    <script>
+      feather.replace();
+    </script>
+    <script src="../static/js/script.js"></script>
+  </body>
+</html>
