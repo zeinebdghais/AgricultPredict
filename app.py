@@ -5,7 +5,7 @@ import joblib
 import os
 
 app = Flask(__name__, static_folder='static')
-CORS(app)
+CORS(app, resources={r"/*": {"origins": "*"}})
 
 try:
     model = joblib.load("model.pkl")

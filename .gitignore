@@ -1,0 +1,6 @@
+crop_yield.csv
+*.csv
+__pycache__/
+*.pyc
+venv/
+.env
