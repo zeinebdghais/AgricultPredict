@@ -7,44 +7,35 @@ document.addEventListener("DOMContentLoaded", () => {
   const submitContent = document.getElementById("submit-text");
   const loadingContent = document.getElementById("loading-text");
 
-  // Fonction pour afficher des messages d'erreur
   function showError(message) {
     alert(`❌ Erreur\n${message}`);
   }
 
-  // Fonction pour valider les nombres réels positifs
   function validatePositiveReal(value, fieldName, min = 0, max = null) {
-    // Vérifier si c'est un nombre
     if (isNaN(value) || value === null || value === "") {
       return `${fieldName} doit être un nombre valide`;
     }
 
-    // Convertir en nombre flottant
     const numValue = parseFloat(value);
 
-    // Vérifier si c'est positif
     if (numValue <= min) {
       return `${fieldName} doit être strictement supérieur à ${min}`;
     }
 
-    // Vérifier la valeur maximale si spécifiée
     if (max !== null && numValue > max) {
       return `${fieldName} ne doit pas dépasser ${max}`;
     }
 
-    // Vérifier si c'est un nombre fini
     if (!isFinite(numValue)) {
       return `${fieldName} doit être un nombre fini`;
     }
 
-    return null; // Pas d'erreur
+    return null;
   }
 
-  // Soumission du formulaire
   form.addEventListener("submit", async (e) => {
     e.preventDefault();
 
-    // Récupération des valeurs
     const region = document.getElementById("region").value;
     const soilType = document.getElementById("soilType").value;
     const cropType = document.getElementById("cropType").value;
@@ -59,7 +50,6 @@ document.addEventListener("DOMContentLoaded", () => {
       ? 1
       : 0;
 
-    // Validation des champs requis
     if (
       !region ||
       !soilType ||
@@ -71,12 +61,11 @@ document.addEventListener("DOMContentLoaded", () => {
       return;
     }
 
-    // Validation spécifique pour Rainfall_mm (précipitations)
     const rainfallError = validatePositiveReal(
       rainfall,
       "Les précipitations (mm)",
-      0, // Minimum strict
-      10000 // Maximum raisonnable pour les précipitations annuelles
+      0,
+      10000
     );
 
     if (rainfallError) {
@@ -85,12 +74,11 @@ document.addEventListener("DOMContentLoaded", () => {
       return;
     }
 
-    // Validation spécifique pour Temperature_Celsius (température)
     const temperatureError = validatePositiveReal(
       temperature,
       "La température (°C)",
-      -50, // Minimum réaliste pour l'agriculture
-      60 // Maximum réaliste pour l'agriculture
+      -50,
+      60
     );
 
     if (temperatureError) {
@@ -99,12 +87,11 @@ document.addEventListener("DOMContentLoaded", () => {
       return;
     }
 
-    // Validation pour Days_to_Harvest (jours de croissance)
     const growingDaysError = validatePositiveReal(
       growingDays,
       "La durée de croissance (jours)",
-      1, // Minimum 1 jour
-      365 // Maximum 1 an
+      1,
+      365
     );
 
     if (growingDaysError) {
@@ -113,7 +100,6 @@ document.addEventListener("DOMContentLoaded", () => {
       return;
     }
 
-    // 📌 CORRESPONDANCE EXACTE AVEC TON MODEL.pkl
     const formData = {
       Region: region,
       Soil_Type: soilType,
@@ -128,7 +114,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
     console.log("Données envoyées:", formData);
 
-    // Activation du mode chargement
     submitButton.disabled = true;
     submitContent.classList.add("hidden");
     loadingContent.classList.remove("hidden");
@@ -170,12 +155,10 @@ document.addEventListener("DOMContentLoaded", () => {
       finalPredictionSpan.style.color = "var(--destructive)";
       showError(`Erreur de connexion: ${error.message}`);
     } finally {
-      // Désactivation du mode chargement
       submitButton.disabled = false;
       submitContent.classList.remove("hidden");
       loadingContent.classList.add("hidden");
 
-      // Affichage du résultat
       predictionResultDiv.classList.remove("hidden");
       predictionResultDiv.classList.add("animate-slide-up");
     }
