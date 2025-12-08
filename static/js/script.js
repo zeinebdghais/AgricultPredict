@@ -142,7 +142,7 @@ document.addEventListener("DOMContentLoaded", () => {
         } else if (parseFloat(formattedYield) < 4.0) {
           finalPredictionSpan.style.color = "var(--sun)";
         } else {
-          finalPredictionSpan.style.color = "var(--leaf)";
+          finalPredictionSpan.style.color = "white";
         }
       } else {
         finalPredictionSpan.textContent = "N/A";
