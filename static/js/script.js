@@ -7,49 +7,128 @@ document.addEventListener("DOMContentLoaded", () => {
   const submitContent = document.getElementById("submit-text");
   const loadingContent = document.getElementById("loading-text");
 
-  // Petit Toast
-  function showToast(title, description, isDestructive = false) {
-    alert(`${title}\n${description}`);
+  // Fonction pour afficher des messages d'erreur
+  function showError(message) {
+    alert(`❌ Erreur\n${message}`);
+  }
+
+  // Fonction pour valider les nombres réels positifs
+  function validatePositiveReal(value, fieldName, min = 0, max = null) {
+    // Vérifier si c'est un nombre
+    if (isNaN(value) || value === null || value === "") {
+      return `${fieldName} doit être un nombre valide`;
+    }
+
+    // Convertir en nombre flottant
+    const numValue = parseFloat(value);
+
+    // Vérifier si c'est positif
+    if (numValue <= min) {
+      return `${fieldName} doit être strictement supérieur à ${min}`;
+    }
+
+    // Vérifier la valeur maximale si spécifiée
+    if (max !== null && numValue > max) {
+      return `${fieldName} ne doit pas dépasser ${max}`;
+    }
+
+    // Vérifier si c'est un nombre fini
+    if (!isFinite(numValue)) {
+      return `${fieldName} doit être un nombre fini`;
+    }
+
+    return null; // Pas d'erreur
   }
 
   // Soumission du formulaire
   form.addEventListener("submit", async (e) => {
     e.preventDefault();
 
-    // 📌 CORRESPONDANCE EXACTE AVEC TON MODEL.pkl
-    const formData = {
-      Region: document.getElementById("region").value,
-      Soil_Type: document.getElementById("soilType").value,
-      Crop: document.getElementById("cropType").value,
-      Rainfall_mm: Number(document.getElementById("rainfall").value),
-      Temperature_Celsius: Number(document.getElementById("temperature").value),
-      Fertilizer_Used: document.getElementById("fertilizerUsed").checked
-        ? 1
-        : 0,
-      Irrigation_Used: document.getElementById("irrigationUsed").checked
-        ? 1
-        : 0,
-      Weather_Condition: document.getElementById("weatherCondition").value,
-      Days_to_Harvest: Number(document.getElementById("growingDays").value),
-    };
+    // Récupération des valeurs
+    const region = document.getElementById("region").value;
+    const soilType = document.getElementById("soilType").value;
+    const cropType = document.getElementById("cropType").value;
+    const rainfall = document.getElementById("rainfall").value;
+    const temperature = document.getElementById("temperature").value;
+    const weatherCondition = document.getElementById("weatherCondition").value;
+    const growingDays = document.getElementById("growingDays").value;
+    const fertilizerUsed = document.getElementById("fertilizerUsed").checked
+      ? 1
+      : 0;
+    const irrigationUsed = document.getElementById("irrigationUsed").checked
+      ? 1
+      : 0;
 
-    // Vérification champs
-    const requiredFields = [
-      formData.Region,
-      formData.Soil_Type,
-      formData.Crop,
-      formData.Rainfall_mm,
-      formData.Temperature_Celsius,
-      formData.Weather_Condition,
-      formData.Days_to_Harvest,
-    ];
-
-    if (requiredFields.some((v) => v === "" || v === null)) {
-      showToast("Champs requis", "Veuillez compléter tous les champs.", true);
+    // Validation des champs requis
+    if (
+      !region ||
+      !soilType ||
+      !cropType ||
+      !weatherCondition ||
+      !growingDays
+    ) {
+      showError("Veuillez compléter tous les champs obligatoires.");
       return;
     }
 
-    // Loading
+    // Validation spécifique pour Rainfall_mm (précipitations)
+    const rainfallError = validatePositiveReal(
+      rainfall,
+      "Les précipitations (mm)",
+      0, // Minimum strict
+      10000 // Maximum raisonnable pour les précipitations annuelles
+    );
+
+    if (rainfallError) {
+      showError(rainfallError);
+      document.getElementById("rainfall").focus();
+      return;
+    }
+
+    // Validation spécifique pour Temperature_Celsius (température)
+    const temperatureError = validatePositiveReal(
+      temperature,
+      "La température (°C)",
+      -50, // Minimum réaliste pour l'agriculture
+      60 // Maximum réaliste pour l'agriculture
+    );
+
+    if (temperatureError) {
+      showError(temperatureError);
+      document.getElementById("temperature").focus();
+      return;
+    }
+
+    // Validation pour Days_to_Harvest (jours de croissance)
+    const growingDaysError = validatePositiveReal(
+      growingDays,
+      "La durée de croissance (jours)",
+      1, // Minimum 1 jour
+      365 // Maximum 1 an
+    );
+
+    if (growingDaysError) {
+      showError(growingDaysError);
+      document.getElementById("growingDays").focus();
+      return;
+    }
+
+    // 📌 CORRESPONDANCE EXACTE AVEC TON MODEL.pkl
+    const formData = {
+      Region: region,
+      Soil_Type: soilType,
+      Crop: cropType,
+      Rainfall_mm: parseFloat(rainfall),
+      Temperature_Celsius: parseFloat(temperature),
+      Fertilizer_Used: fertilizerUsed,
+      Irrigation_Used: irrigationUsed,
+      Weather_Condition: weatherCondition,
+      Days_to_Harvest: parseInt(growingDays),
+    };
+
+    console.log("Données envoyées:", formData);
+
+    // Activation du mode chargement
     submitButton.disabled = true;
     submitContent.classList.add("hidden");
     loadingContent.classList.remove("hidden");
@@ -62,38 +141,130 @@ document.addEventListener("DOMContentLoaded", () => {
         body: JSON.stringify(formData),
       });
 
-      const data = await res.json();
-      console.log("API RESPONSE:", data);
+      if (!res.ok) {
+        throw new Error(`Erreur HTTP: ${res.status}`);
+      }
 
-      if (data.predicted_yield !== undefined) {
-        finalPredictionSpan.textContent = data.predicted_yield.toFixed(2);
+      const data = await res.json();
+      console.log("Réponse de l'API:", data);
+
+      if (data.predicted_yield !== undefined && data.predicted_yield !== null) {
+        const formattedYield = parseFloat(data.predicted_yield).toFixed(2);
+        finalPredictionSpan.textContent = formattedYield;
+
+        if (parseFloat(formattedYield) < 2.0) {
+          finalPredictionSpan.style.color = "var(--destructive)";
+        } else if (parseFloat(formattedYield) < 4.0) {
+          finalPredictionSpan.style.color = "var(--sun)";
+        } else {
+          finalPredictionSpan.style.color = "var(--leaf)";
+        }
       } else {
-        finalPredictionSpan.textContent =
-          "Erreur : " + (data.error || "Données invalides");
+        finalPredictionSpan.textContent = "N/A";
+        finalPredictionSpan.style.color = "var(--muted-foreground)";
+        showError(data.error || "Données de prédiction non disponibles");
       }
     } catch (error) {
-      console.error("API ERROR:", error);
-      finalPredictionSpan.textContent = "Erreur de connexion API";
+      console.error("Erreur API:", error);
+      finalPredictionSpan.textContent = "Erreur";
+      finalPredictionSpan.style.color = "var(--destructive)";
+      showError(`Erreur de connexion: ${error.message}`);
+    } finally {
+      // Désactivation du mode chargement
+      submitButton.disabled = false;
+      submitContent.classList.remove("hidden");
+      loadingContent.classList.add("hidden");
+
+      // Affichage du résultat
+      predictionResultDiv.classList.remove("hidden");
+      predictionResultDiv.classList.add("animate-slide-up");
     }
-
-    // Loading OFF
-    submitButton.disabled = false;
-    submitContent.classList.remove("hidden");
-    loadingContent.classList.add("hidden");
-
-    // Afficher résultat
-    predictionResultDiv.classList.remove("hidden");
-    predictionResultDiv.classList.add("animate-slide-up");
-
-    // showToast("Prédiction terminée", "Rendement estimé calculé.");
   });
 
-  // Reset
+  document.getElementById("rainfall").addEventListener("blur", function () {
+    const value = this.value;
+    if (value) {
+      const error = validatePositiveReal(value, "Les précipitations", 0, 10000);
+      if (error) {
+        this.style.borderColor = "var(--destructive)";
+        this.style.boxShadow = "0 0 0 2px rgba(220, 38, 38, 0.2)";
+      } else {
+        this.style.borderColor = "";
+        this.style.boxShadow = "";
+      }
+    }
+  });
+
+  document.getElementById("temperature").addEventListener("blur", function () {
+    const value = this.value;
+    if (value) {
+      const error = validatePositiveReal(value, "La température", -50, 60);
+      if (error) {
+        this.style.borderColor = "var(--destructive)";
+        this.style.boxShadow = "0 0 0 2px rgba(220, 38, 38, 0.2)";
+      } else {
+        this.style.borderColor = "";
+        this.style.boxShadow = "";
+      }
+    }
+  });
+
+  document.getElementById("growingDays").addEventListener("blur", function () {
+    const value = this.value;
+    if (value) {
+      const error = validatePositiveReal(
+        value,
+        "La durée de croissance",
+        1,
+        365
+      );
+      if (error) {
+        this.style.borderColor = "var(--destructive)";
+        this.style.boxShadow = "0 0 0 2px rgba(220, 38, 38, 0.2)";
+      } else {
+        this.style.borderColor = "";
+        this.style.boxShadow = "";
+      }
+    }
+  });
+
+  // Réinitialisation du formulaire
   resetButton.addEventListener("click", () => {
     form.reset();
     predictionResultDiv.classList.add("hidden");
     predictionResultDiv.classList.remove("animate-slide-up");
     finalPredictionSpan.textContent = "";
-    // showToast("Formulaire réinitialisé", "Les champs ont été effacés.");
+    finalPredictionSpan.style.color = "";
+
+    // Réinitialiser les styles de validation
+    const inputs = document.querySelectorAll(".form-control");
+    inputs.forEach((input) => {
+      input.style.borderColor = "";
+      input.style.boxShadow = "";
+    });
   });
+
+  function initializeValidation() {
+    const rainfallInput = document.getElementById("rainfall");
+    const temperatureInput = document.getElementById("temperature");
+    const growingDaysInput = document.getElementById("growingDays");
+
+    rainfallInput.placeholder = "Ex: 750.5";
+    temperatureInput.placeholder = "Ex: 25.3 ";
+    growingDaysInput.placeholder = "Ex: 120 ";
+
+    rainfallInput.min = "0.1";
+    rainfallInput.max = "10000";
+    rainfallInput.step = "0.1";
+
+    temperatureInput.min = "-49.9";
+    temperatureInput.max = "59.9";
+    temperatureInput.step = "0.1";
+
+    growingDaysInput.min = "1";
+    growingDaysInput.max = "365";
+    growingDaysInput.step = "1";
+  }
+
+  initializeValidation();
 });

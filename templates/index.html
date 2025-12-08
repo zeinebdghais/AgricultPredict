@@ -2,7 +2,10 @@
 <html lang="fr">
   <head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"
+    />
     <title>AgriPredict - Prédiction du Rendement Agricole</title>
     <link rel="stylesheet" href="../static/css/style.css" />
     <link
@@ -14,6 +17,22 @@
       href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
     />
     <script src="https://unpkg.com/feather-icons"></script>
+    <!-- Style mobile d'urgence -->
+    <style>
+      @media (max-width: 768px) {
+        body {
+          font-size: 14px;
+        }
+        .container {
+          padding: 0 15px !important;
+        }
+        input,
+        select,
+        button {
+          font-size: 16px !important;
+        }
+      }
+    </style>
   </head>
   <body class="bg-background text-foreground font-sans antialiased">
     <div id="root" class="min-h-screen">
@@ -56,15 +75,17 @@
         </div>
       </section>
 
-      <section class="py-10 px-4">
+      <section class="prediction-section py-8 md:py-10 px-4">
         <div class="container mx-auto max-w-4xl">
-          <div class="text-center mb-12 animate-fade-in">
+          <div class="text-center mb-8 md:mb-12 animate-fade-in">
             <h2
-              class="font-display text-3xl md-text-4xl font-bold text-foreground mb-4"
+              class="section-title font-display text-2xl md:text-3xl lg:text-4xl font-bold text-foreground mb-4"
             >
               Calculez votre rendement
             </h2>
-            <p class="text-muted-foreground text-lg max-w-2xl mx-auto">
+            <p
+              class="section-description text-muted-foreground text-base md:text-lg max-w-2xl mx-auto"
+            >
               Renseignez les paramètres de votre exploitation pour obtenir une
               estimation précise de votre production.
             </p>
@@ -73,11 +94,13 @@
           <div
             class="card shadow-elevated border-0 bg-card-80 backdrop-blur-sm"
           >
-            <header class="border-b border-border-50 p-6 md-p-8">
+            <header
+              class="card-header border-b border-border-50 p-4 md:p-6 lg:p-8"
+            >
               <h3
-                class="flex items-center gap-3 text-xl font-display font-bold text-card-foreground"
+                class="card-title flex items-center gap-3 text-lg md:text-xl font-display font-bold text-card-foreground"
               >
-                <div class="p-2 rounded-lg bg-primary-10">
+                <div class="icon-container p-2 rounded-lg bg-primary-10">
                   <i
                     data-feather="bar-chart-2"
                     class="w-5 h-5 text-primary-color"
@@ -87,14 +110,14 @@
               </h3>
             </header>
 
-            <div class="card-body">
+            <div class="card-body p-4 md:p-6 lg:p-8">
               <form id="prediction-form">
                 <div class="form-grid">
                   <!-- Région -->
                   <div class="form-group">
-                    <label for="region">
+                    <label for="region" class="form-label">
                       <i
-                        class="fas fa-map-marker-alt"
+                        class="fas fa-map-marker-alt form-label-icon"
                         style="color: var(--primary)"
                       ></i>
                       Région
@@ -112,9 +135,9 @@
 
                   <!-- Type de sol -->
                   <div class="form-group">
-                    <label for="soilType">
+                    <label for="soilType" class="form-label">
                       <i
-                        class="fas fa-mountain"
+                        class="fas fa-mountain form-label-icon"
                         style="color: var(--earth)"
                       ></i>
                       Type de sol
@@ -133,8 +156,11 @@
 
                   <!-- Type de culture -->
                   <div class="form-group">
-                    <label for="cropType">
-                      <i class="fas fa-seedling" style="color: var(--sun)"></i>
+                    <label for="cropType" class="form-label">
+                      <i
+                        class="fas fa-seedling form-label-icon"
+                        style="color: var(--sun)"
+                      ></i>
                       Type de culture
                     </label>
                     <select id="cropType" class="form-control" required>
@@ -152,8 +178,11 @@
 
                   <!-- Conditions météo -->
                   <div class="form-group">
-                    <label for="weatherCondition">
-                      <i class="fas fa-sun" style="color: var(--sun)"></i>
+                    <label for="weatherCondition" class="form-label">
+                      <i
+                        class="fas fa-sun form-label-icon"
+                        style="color: var(--sun)"
+                      ></i>
                       Conditions météo dominantes
                     </label>
                     <select id="weatherCondition" class="form-control" required>
@@ -168,9 +197,9 @@
 
                   <!-- Précipitations -->
                   <div class="form-group">
-                    <label for="rainfall">
+                    <label for="rainfall" class="form-label">
                       <i
-                        class="fas fa-cloud-rain"
+                        class="fas fa-cloud-rain form-label-icon"
                         style="color: var(--sky)"
                       ></i>
                       Précipitations totales (mm)
@@ -187,9 +216,9 @@
 
                   <!-- Température -->
                   <div class="form-group">
-                    <label for="temperature">
+                    <label for="temperature" class="form-label">
                       <i
-                        class="fas fa-thermometer-half"
+                        class="fas fa-thermometer-half form-label-icon"
                         style="color: var(--destructive)"
                       ></i>
                       Température moyenne (°C)
@@ -207,9 +236,9 @@
 
                   <!-- Durée de croissance -->
                   <div class="form-group full-width">
-                    <label for="growingDays">
+                    <label for="growingDays" class="form-label">
                       <i
-                        class="fas fa-calendar-alt"
+                        class="fas fa-calendar-alt form-label-icon"
                         style="color: var(--primary)"
                       ></i>
                       Durée de croissance (jours)
@@ -236,12 +265,12 @@
                         <i class="fas fa-flask" style="color: var(--leaf)"></i>
                       </div>
                       <div class="toggle-content">
-                        <label
-                          for="fertilizerUsed"
-                          style="cursor: pointer; margin: 0"
+                        <label for="fertilizerUsed" class="toggle-text-label"
                           >Engrais utilisé</label
                         >
-                        <p>Fertilisant appliqué sur les cultures</p>
+                        <p class="toggle-description">
+                          Fertilisant appliqué sur les cultures
+                        </p>
                       </div>
                     </div>
                     <label class="switch">
@@ -259,12 +288,12 @@
                         <i class="fas fa-tint" style="color: var(--sky)"></i>
                       </div>
                       <div class="toggle-content">
-                        <label
-                          for="irrigationUsed"
-                          style="cursor: pointer; margin: 0"
+                        <label for="irrigationUsed" class="toggle-text-label"
                           >Irrigation utilisée</label
                         >
-                        <p>Système d'irrigation en place</p>
+                        <p class="toggle-description">
+                          Système d'irrigation en place
+                        </p>
                       </div>
                     </div>
                     <label class="switch">
@@ -301,24 +330,14 @@
               <!-- Résultat -->
               <div id="prediction-result" class="result-card hidden">
                 <div class="result-content">
-                  <div>
-                    <p
-                      style="
-                        opacity: 0.8;
-                        font-size: 0.875rem;
-                        text-transform: uppercase;
-                        letter-spacing: 0.05em;
-                        margin-bottom: 0.5rem;
-                      "
-                    >
-                      Rendement estimé
-                    </p>
+                  <div class="result-value-container">
+                    <p class="result-label">Rendement estimé</p>
                     <p class="result-value">
                       <span id="final-prediction">5,37</span>
                       <span class="result-unit">t/ha</span>
                     </p>
                   </div>
-                  <div style="text-align: center">
+                  <div class="result-meta">
                     <div class="result-badge">
                       <i class="fas fa-chart-line"></i>
                       <span>Prédiction réussie</span>
@@ -331,12 +350,11 @@
           </div>
         </div>
       </section>
-      <!-- 
+
+      <!-- Footer optionnel
       <footer class="py-10 px-4 border-t border-border-50 bg-card-50">
         <div class="container mx-auto max-w-4xl">
-          <div
-            class="flex flex-col md-flex-row items-center justify-between gap-4"
-          >
+          <div class="footer-content flex flex-col md:flex-row items-center justify-between gap-4">
             <div class="flex items-center gap-2">
               <div class="p-2 rounded-lg bg-primary-10">
                 <i data-feather="leaf" class="w-5 h-5 text-primary-color"></i>
@@ -350,7 +368,8 @@
             </p>
           </div>
         </div>
-      </footer> -->
+      </footer>
+      -->
     </div>
 
     <script>
