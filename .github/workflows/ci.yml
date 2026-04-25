@@ -30,7 +30,6 @@ jobs:
           python-version: '3.12'
       - run: cd backend && pip install -r requirements.txt
       - run: cd backend && pytest test.py -v
-
   sonarqube:
     name: SonarQube Analysis
     runs-on: ubuntu-latest
@@ -39,11 +38,19 @@ jobs:
       - uses: actions/checkout@v4
         with:
           fetch-depth: 0
-      - uses: SonarSource/sonarqube-scan-action@master
-        env:
-          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-          SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
-
+      - name: SonarQube Scan
+        run: |
+          pip install sonar-scanner-python || true
+          docker run \
+            --rm \
+            -e SONAR_HOST_URL="${{ secrets.SONAR_HOST_URL }}" \
+            -e SONAR_TOKEN="${{ secrets.SONAR_TOKEN }}" \
+            -v "$(pwd):/usr/src" \
+            sonarsource/sonar-scanner-cli \
+            -Dsonar.projectKey=zeinebdghais_AgricultPredict \
+            -Dsonar.organization=zeinebdghais \
+            -Dsonar.sources=backend \
+            -Dsonar.host.url=https://sonarcloud.io
   docker:
     name: Build and Push Docker
     runs-on: ubuntu-latest
