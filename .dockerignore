@@ -1,0 +1,29 @@
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+venv/
+.env
+*.egg-info/
+
+# Git
+.git/
+.gitignore
+
+# Tests
+.pytest_cache/
+htmlcov/
+
+# Docker
+docker/
+
+# K8s
+k8s/
+
+# GitHub
+.github/
+
+# Divers
+*.md
+README.md
