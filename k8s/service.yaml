@@ -1,0 +1,15 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: agricult-predict-service
+  namespace: default
+  labels:
+    app: agricult-predict
+spec:
+  selector:
+    app: agricult-predict
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 5000
+  type: NodePort

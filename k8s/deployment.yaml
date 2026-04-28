@@ -1,0 +1,44 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: agricult-predict
+  namespace: default
+  labels:
+    app: agricult-predict
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: agricult-predict
+  template:
+    metadata:
+      labels:
+        app: agricult-predict
+    spec:
+      containers:
+        - name: agricult-predict
+          image: zeinebdghais/agricult-predict:latest
+          ports:
+            - containerPort: 5000
+          env:
+            - name: PORT
+              value: "5000"
+          resources:
+            requests:
+              memory: "256Mi"
+              cpu: "250m"
+            limits:
+              memory: "512Mi"
+              cpu: "500m"
+          livenessProbe:
+            httpGet:
+              path: /test
+              port: 5000
+            initialDelaySeconds: 30
+            periodSeconds: 10
+          readinessProbe:
+            httpGet:
+              path: /test
+              port: 5000
+            initialDelaySeconds: 15
+            periodSeconds: 5
